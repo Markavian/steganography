@@ -1,17 +1,18 @@
 console.log('node canvas test:');
 
 var fs = require('fs');
-var Canvas = require('canvas')
-  , Image = Canvas.Image
-  , canvas = new Canvas(200, 200)
-  , ctx = canvas.getContext('2d');
+var Canvas = require('canvas'),
+  Image = Canvas.Image,
+  canvas = new Canvas(200, 200),
+  ctx = canvas.getContext('2d');
 
 
 var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 
 var sourceImagePath = __dirname + '/images/source/awesome.png';
 var outputTestPath = __dirname + '/test.html'
-fs.readFile(sourceImagePath, function(err, sourceImage) {
+var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
+fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
   img.src = sourceImage;
@@ -34,4 +35,20 @@ fs.readFile(sourceImagePath, function(err, sourceImage) {
   var imgTag = '<img src="' + imgData + '" />';
   fs.writeFile(outputTestPath, testTemplate.replace('{{body}}', imgTag), 'utf8');
   console.log('Wrote test image out to', outputTestPath, 'containing', imgData.length, 'bytes');
+
+  savePNG(outputTestPNG, canvas);
 });
+
+function savePNG(path, canvas) {
+  var fs = require('fs'),
+    out = fs.createWriteStream(path),
+    stream = canvas.pngStream();
+
+  stream.on('data', function (chunk) {
+    out.write(chunk);
+  });
+
+  stream.on('end', function () {
+    console.log('Saved png', path);
+  });
+}
