@@ -12,20 +12,34 @@ var outputTestPath = __dirname + '/test.html'
 var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
 var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
 
-var dataToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
+var messageToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
+var dataToEncode = createNumberArrayFromString(messageToEncode);
+var decodedData = dataToEncode; // TODO: Read from source image
+var decodedMessage = createStringFromNumberArray(decodedData);
 
-var charCodes = [];
-for (var i = 0; i < dataToEncode.length; i++) {
-  var charCode = dataToEncode.charCodeAt(i);
-  charCodes.push(charCode);
+function createNumberArrayFromString(inputString) {
+  var numberArray = [];
+  for (var i = 0; i < inputString.length; i++) {
+    var charCode = inputString.charCodeAt(i);
+    numberArray.push(charCode);
+  }
+  return numberArray;
 }
-console.log('Data to Encode:', dataToEncode);
-console.log(charCodes.join(' '));
 
-var decodedData = charCodes.map((code) => {
-  return String.fromCharCode(code)
-});
+function createStringFromNumberArray(numberArray) {
+  var stringArray = numberArray.map((code) => {
+    return String.fromCharCode(code)
+  });
+  return stringArray.join('');
+}
+
+console.log('Message to Encode:', messageToEncode);
+console.log('Data to Encode:');
+console.log(dataToEncode.join(' '));
+console.log('Decoded Data:');
 console.log(decodedData.join(' '));
+console.log('Decoded Message:');
+console.log(decodedMessage.split('').join(' '));
 
 function grayscale(context, imageData) {
   var data = imageData.data;
@@ -38,6 +52,18 @@ function grayscale(context, imageData) {
   context.putImageData(imageData, 0, 0);
 };
 
+function encode(context, imageData, dataToEncode) {
+  var data = imageData.data;
+  for (var i = 0; i < data.length; i += 4) {
+    /* var avg = (data[i] + data[i + 1] + data[i + 2]) / 3; */
+    var pixel = dataToEncode[i / 4 % dataToEncode.length];
+    data[i] = pixel; // red
+    data[i + 1] = pixel; // green
+    data[i + 2] = pixel; // blue
+  }
+  context.putImageData(imageData, 0, 0);
+}
+
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
@@ -47,9 +73,10 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
     ctx = canvas.getContext('2d');
 
   ctx.scale(0.25, 0.25);
-  ctx.drawImage(img, -100, -100, img.width, img.height);
+  ctx.drawImage(img, 0, 0, img.width, img.height);
   var rawImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  grayscale(ctx, rawImageData);
+  //grayscale(ctx, rawImageData);
+  encode(ctx, rawImageData, dataToEncode);
 
   var imgData = canvas.toDataURL();
   var imgTag = '<img src="' + imgData + '" />';
