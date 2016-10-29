@@ -9,13 +9,14 @@ var Canvas = require('canvas')
 
 var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 
-var sourceImagePath = __dirname + '/images/source/workstation.jpg';
+var sourceImagePath = __dirname + '/images/source/awesome.png';
 var outputTestPath = __dirname + '/test.html'
 fs.readFile(sourceImagePath, function(err, sourceImage) {
   if (err) throw err;
   img = new Image;
   img.src = sourceImage;
-  ctx.drawImage(img, 0, 0, img.width / 4, img.height / 4);
+  ctx.rotate(0.5);
+  ctx.drawImage(img, -100, -100, img.width, img.height);
 
   ctx.font = '30px Impact';
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
