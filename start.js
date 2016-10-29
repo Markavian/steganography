@@ -83,46 +83,65 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   fs.writeFile(outputTestPath, testTemplate.replace('{{body}}', imgTag), 'utf8');
   console.log('Wrote test image out to', outputTestPath, 'containing', imgData.length, 'bytes');
 
-  savePNG(outputTestPNG, canvas);
-  saveJPEG(outputTestJPEG, canvas, 100);
-  saveJPEG(outputTestJPEG, canvas, 75);
-  saveJPEG(outputTestJPEG, canvas, 50);
-  saveJPEG(outputTestJPEG, canvas, 25);
-  saveJPEG(outputTestJPEG, canvas, 10);
-  saveJPEG(outputTestJPEG, canvas, 5);
-  saveJPEG(outputTestJPEG, canvas, 1);
+  var NL = '\n';
+  Promise.all([
+    savePNG(outputTestPNG, canvas),
+    saveJPEG(outputTestJPEG, canvas, 100),
+    saveJPEG(outputTestJPEG, canvas, 75),
+    saveJPEG(outputTestJPEG, canvas, 50),
+    saveJPEG(outputTestJPEG, canvas, 25),
+    saveJPEG(outputTestJPEG, canvas, 10),
+    saveJPEG(outputTestJPEG, canvas, 5),
+    saveJPEG(outputTestJPEG, canvas, 1),
+  ]).then((files) => {
+    console.log('Wrote files', NL, files.join(NL));
+  });
 });
 
 function savePNG(path, canvas) {
-  var fs = require('fs'),
-    out = fs.createWriteStream(path),
-    stream = canvas.pngStream();
+  return new Promise((accept, reject) => {
+    var fs = require('fs'),
+      out = fs.createWriteStream(path),
+      stream = canvas.pngStream();
 
-  stream.on('data', function (chunk) {
-    out.write(chunk);
-  });
+    stream.on('data', function (chunk) {
+      out.write(chunk);
+    });
 
-  stream.on('end', function () {
-    console.log('Saved png', path);
+    stream.on('end', function () {
+      console.log('Saved png', path);
+      accept(path);
+    });
+
+    setTimeout(() => {
+      reject(`Timed out trying to Save png: ${path}`);
+    }, 5000);
   });
 }
 
 function saveJPEG(path, canvas, quality) {
-  quality = quality || 75;
-  path = path.replace('{{quality}}', quality);
-  var fs = require('fs'),
-    out = fs.createWriteStream(path),
-    stream = canvas.jpegStream({
-      bufsize: 4096, // output buffer size in bytes, default: 4096
-      quality: quality, // JPEG quality (0-100) default: 75
-      progressive: false // true for progressive compression, default: false
+  return new Promise((accept, reject) => {
+    quality = quality || 75;
+    path = path.replace('{{quality}}', quality);
+    var fs = require('fs'),
+      out = fs.createWriteStream(path),
+      stream = canvas.jpegStream({
+        bufsize: 4096, // output buffer size in bytes, default: 4096
+        quality: quality, // JPEG quality (0-100) default: 75
+        progressive: false // true for progressive compression, default: false
+      });
+
+    stream.on('data', function (chunk) {
+      out.write(chunk);
     });
 
-  stream.on('data', function (chunk) {
-    out.write(chunk);
-  });
+    stream.on('end', function () {
+      console.log('Saved jpg', path);
+      accept(path);
+    });
 
-  stream.on('end', function () {
-    console.log('Saved jpg', path);
+    setTimeout(() => {
+      reject(`Timed out trying to Save jpg: ${path}, Quality: ${quality}`);
+    }, 5000);
   });
 }
