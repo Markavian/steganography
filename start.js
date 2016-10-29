@@ -25,6 +25,7 @@ function createStringFromNumberArray(numberArray) {
 var sourceImagePath = __dirname + '/images/source/workstation.jpg';
 var outputPath = __dirname + '/images/output';
 var outputName = 'save';
+var resolution = 20;
 
 var messageToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
 var dataToEncode = createNumberArrayFromString(messageToEncode);
@@ -45,7 +46,7 @@ function encodeImageFile(imagePath) {
     fs.readFile(imagePath, function (err, sourceImage) {
       if (err) reject(err);
 
-      encodeImage(sourceImage, dataToEncode, outputPath, outputName)
+      encodeImage(sourceImage, resolution, dataToEncode, outputPath, outputName)
         .then((files) => {
           console.log('');
           console.log(`Saved output as ${files.length} files:`, NL, files.join(NL));
@@ -58,15 +59,13 @@ function encodeImageFile(imagePath) {
 }
 
 function decodeImageFile(imagePath) {
-  console.log('');
-  console.log('Decoding data from:', imagePath);
-
   return new Promise((accept, reject) => {
     fs.readFile(imagePath, function (err, sourceImage) {
       if (err) reject(err);
 
-      decodeImage(sourceImage).then((decodedData) => {
-          console.log('Decoded data', decodedData.length, 'values');
+      decodeImage(sourceImage, resolution).then((decodedData) => {
+          console.log('');
+          console.log('Decoded data', decodedData.length, 'values', 'from', imagePath);
           var decodedMessage = createStringFromNumberArray(decodedData);
           console.log('Decoded Message:', decodedMessage);
           console.log('');
