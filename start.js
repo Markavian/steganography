@@ -1,5 +1,7 @@
-console.log('node canvas test:');
+var info = require('./package.json');
+console.log(info.description);
 
+var NL = '\n';
 var fs = require('fs');
 var encodeImage = require('./lib/encodeImage');
 
@@ -38,5 +40,12 @@ console.log(decodedMessage.split('').join(' '));
 
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
-  encodeImage(sourceImage, dataToEncode, outputPath, outputName);
+
+  console.log('');
+
+  encodeImage(sourceImage, dataToEncode, outputPath, outputName)
+    .then((files) => {
+      console.log('');
+      console.log(`Saved output as ${files.length} files:`, NL, files.join(NL));
+    });;
 });
