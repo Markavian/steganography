@@ -32,6 +32,10 @@ var dataToEncode = createNumberArrayFromString(messageToEncode);
 var decodedData = dataToEncode; // TODO: Read from source image
 var decodedMessage = createStringFromNumberArray(decodedData);
 
+if(messageToEncode.length > Math.pow(resolution, 2)) {
+  console.log('WARNING: Message is too long for specified resolution - it will be cropped', Math.pow(resolution, 2), resolution, messageToEncode.length);
+}
+
 console.log('Message to Encode:', messageToEncode);
 console.log('Data to Encode:');
 console.log(dataToEncode.join(' '));
