@@ -2,14 +2,12 @@ console.log('node canvas test:');
 
 var fs = require('fs');
 var Canvas = require('canvas'),
-  Image = Canvas.Image,
-  canvas = new Canvas(200, 200),
-  ctx = canvas.getContext('2d');
+  Image = Canvas.Image;
 
 
 var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 
-var sourceImagePath = __dirname + '/images/source/awesome.png';
+var sourceImagePath = __dirname + '/images/source/workstation.jpg';
 var outputTestPath = __dirname + '/test.html'
 var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
 var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
@@ -17,20 +15,12 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
   img.src = sourceImage;
-  ctx.rotate(0.5);
+
+  canvas = new Canvas(img.width / 4, img.height / 4),
+  ctx = canvas.getContext('2d');
+
+  ctx.scale(0.25, 0.25);
   ctx.drawImage(img, -100, -100, img.width, img.height);
-
-  ctx.font = '30px Impact';
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  ctx.rotate(.1);
-  ctx.fillText("Awesome!", 50, 100);
-
-  var te = ctx.measureText('Awesome!');
-  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-  ctx.beginPath();
-  ctx.lineTo(50, 106);
-  ctx.lineTo(50 + te.width, 106);
-  ctx.stroke();
 
   var imgData = canvas.toDataURL();
   var imgTag = '<img src="' + imgData + '" />';
@@ -43,7 +33,8 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   saveJPEG(outputTestJPEG, canvas, 50);
   saveJPEG(outputTestJPEG, canvas, 25);
   saveJPEG(outputTestJPEG, canvas, 10);
-  saveJPEG(outputTestJPEG, canvas, 0);
+  saveJPEG(outputTestJPEG, canvas, 5);
+  saveJPEG(outputTestJPEG, canvas, 1);
 });
 
 function savePNG(path, canvas) {
