@@ -15,15 +15,28 @@ var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
 var dataToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
 
 var charCodes = [];
-for(var i=0; i<dataToEncode.length; i++) {
+for (var i = 0; i < dataToEncode.length; i++) {
   var charCode = dataToEncode.charCodeAt(i);
   charCodes.push(charCode);
 }
 console.log('Data to Encode:', dataToEncode);
 console.log(charCodes.join(' '));
 
-var decodedData = charCodes.map(String.fromCharCode);
+var decodedData = charCodes.map((code) => {
+  return String.fromCharCode(code)
+});
 console.log(decodedData.join(' '));
+
+function grayscale(context, imageData) {
+  var data = imageData.data;
+  for (var i = 0; i < data.length; i += 4) {
+    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+    data[i] = avg; // red
+    data[i + 1] = avg; // green
+    data[i + 2] = avg; // blue
+  }
+  context.putImageData(imageData, 0, 0);
+};
 
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
@@ -31,10 +44,12 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   img.src = sourceImage;
 
   canvas = new Canvas(img.width / 4, img.height / 4),
-  ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d');
 
   ctx.scale(0.25, 0.25);
   ctx.drawImage(img, -100, -100, img.width, img.height);
+  var rawImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  grayscale(ctx, rawImageData);
 
   var imgData = canvas.toDataURL();
   var imgTag = '<img src="' + imgData + '" />';
