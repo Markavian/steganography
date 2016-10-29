@@ -22,6 +22,7 @@
     "url": "https://github.com/connected-web/steganography/issues"
   },
   "dependencies": {
-    "canvas": "^1.6.1"
+    "canvas": "^1.6.1",
+    "stats-lite": "^2.0.3"
   }
 }
