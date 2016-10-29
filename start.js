@@ -4,6 +4,7 @@ console.log(info.description);
 var NL = '\n';
 var fs = require('fs');
 var encodeImage = require('./lib/encodeImage');
+var decodeImage = require('./lib/decodeImage');
 
 var sourceImagePath = __dirname + '/images/source/workstation.jpg';
 var outputPath = __dirname + '/images/output';
@@ -47,5 +48,21 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
     .then((files) => {
       console.log('');
       console.log(`Saved output as ${files.length} files:`, NL, files.join(NL));
-    });;
+      return files;
+    })
+    .then((files) => {
+      console.log('');
+      console.log('Decoding data', files[0]);
+      fs.readFile(files[0], function (err, sourceImage) {
+        return decodeImage(sourceImage).then((decodedData) => {
+          // console.log('Decoded Data:', decodedData.join(' '));
+          console.log('Decoded data', decodedData.length, 'values');
+          var decodedMessage = createStringFromNumberArray(decodedData);
+          console.log('Decoded Message:', decodedMessage);
+        });
+      });
+    })
+    .catch((ex) => {
+      console.error('Explosions', ex, ex.stack);
+    });
 });
