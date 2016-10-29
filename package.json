@@ -20,5 +20,8 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/connected-web/steganography/issues"
+  },
+  "dependencies": {
+    "canvas": "^1.6.1"
   }
 }

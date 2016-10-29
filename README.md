@@ -13,9 +13,10 @@ An entry for the Hack Manchester 2016 GCHQ challenge to create a steganography t
 
 ## Requirements
 
-This project use node and ImageMagick:
+Mac OSX:
 - https://nodejs.org/en/
-- http://www.imagemagick.org/
+- `npm install`
+- `brew install pkg-config cairo pango libpng jpeg giflib`
 
 ## Goal
 
