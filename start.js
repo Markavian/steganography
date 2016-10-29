@@ -1,21 +1,11 @@
 console.log('node canvas test:');
 
 var fs = require('fs');
-var Canvas = require('canvas'),
-  Image = Canvas.Image;
-
-var savePNG = require('./lib/savePng');
-var saveJPEG = require('./lib/saveJpeg');
-
-var grayscale = require('./lib/canvasGrayscale');
-var encode = require('./lib/canvasEncode');
-
-var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
+var encodeImage = require('./lib/encodeImage');
 
 var sourceImagePath = __dirname + '/images/source/workstation.jpg';
-var outputTestPath = __dirname + '/test.html'
-var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
-var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
+var outputPath = __dirname + '/images/output';
+var outputName = 'save';
 
 var messageToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
 var dataToEncode = createNumberArrayFromString(messageToEncode);
@@ -48,34 +38,5 @@ console.log(decodedMessage.split('').join(' '));
 
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
-  img = new Image;
-  img.src = sourceImage;
-
-  canvas = new Canvas(img.width / 4, img.height / 4),
-    ctx = canvas.getContext('2d');
-
-  ctx.scale(0.25, 0.25);
-  ctx.drawImage(img, 0, 0, img.width, img.height);
-  var rawImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  //grayscale(ctx, rawImageData);
-  encode(ctx, rawImageData, dataToEncode);
-
-  var imgData = canvas.toDataURL();
-  var imgTag = '<img src="' + imgData + '" />';
-  fs.writeFile(outputTestPath, testTemplate.replace('{{body}}', imgTag), 'utf8');
-  console.log('Wrote test image out to', outputTestPath, 'containing', imgData.length, 'bytes');
-
-  var NL = '\n';
-  Promise.all([
-    savePNG(outputTestPNG, canvas),
-    saveJPEG(outputTestJPEG, canvas, 100),
-    saveJPEG(outputTestJPEG, canvas, 75),
-    saveJPEG(outputTestJPEG, canvas, 50),
-    saveJPEG(outputTestJPEG, canvas, 25),
-    saveJPEG(outputTestJPEG, canvas, 10),
-    saveJPEG(outputTestJPEG, canvas, 5),
-    saveJPEG(outputTestJPEG, canvas, 1),
-  ]).then((files) => {
-    console.log('Wrote files', NL, files.join(NL));
-  });
+  encodeImage(sourceImage, dataToEncode, outputPath, outputName);
 });
