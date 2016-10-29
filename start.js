@@ -11,6 +11,20 @@ var sourceImagePath = __dirname + '/images/source/workstation.jpg';
 var outputTestPath = __dirname + '/test.html'
 var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
 var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
+
+var dataToEncode = process.argv[2] || 'Team Fate is Awesome! Hack Manchester 2016';
+
+var charCodes = [];
+for(var i=0; i<dataToEncode.length; i++) {
+  var charCode = dataToEncode.charCodeAt(i);
+  charCodes.push(charCode);
+}
+console.log('Data to Encode:', dataToEncode);
+console.log(charCodes.join(' '));
+
+var decodedData = charCodes.map(String.fromCharCode);
+console.log(decodedData.join(' '));
+
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
