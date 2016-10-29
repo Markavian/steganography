@@ -7,6 +7,9 @@ var Canvas = require('canvas'),
 var savePNG = require('./lib/savePng');
 var saveJPEG = require('./lib/saveJpeg');
 
+var grayscale = require('./lib/canvasGrayscale');
+var encode = require('./lib/canvasEncode');
+
 var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 
 var sourceImagePath = __dirname + '/images/source/workstation.jpg';
@@ -42,29 +45,6 @@ console.log('Decoded Data:');
 console.log(decodedData.join(' '));
 console.log('Decoded Message:');
 console.log(decodedMessage.split('').join(' '));
-
-function grayscale(context, imageData) {
-  var data = imageData.data;
-  for (var i = 0; i < data.length; i += 4) {
-    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-    data[i] = avg; // red
-    data[i + 1] = avg; // green
-    data[i + 2] = avg; // blue
-  }
-  context.putImageData(imageData, 0, 0);
-};
-
-function encode(context, imageData, dataToEncode) {
-  var data = imageData.data;
-  for (var i = 0; i < data.length; i += 4) {
-    /* var avg = (data[i] + data[i + 1] + data[i + 2]) / 3; */
-    var pixel = dataToEncode[i / 4 % dataToEncode.length];
-    data[i] = pixel; // red
-    data[i + 1] = pixel; // green
-    data[i + 2] = pixel; // blue
-  }
-  context.putImageData(imageData, 0, 0);
-}
 
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
