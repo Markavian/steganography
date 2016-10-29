@@ -12,6 +12,7 @@ var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 var sourceImagePath = __dirname + '/images/source/awesome.png';
 var outputTestPath = __dirname + '/test.html'
 var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
+var outputTestJPEG = __dirname + '/images/output/saveJPEG-test.jpg';
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
@@ -37,6 +38,7 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   console.log('Wrote test image out to', outputTestPath, 'containing', imgData.length, 'bytes');
 
   savePNG(outputTestPNG, canvas);
+  saveJPEG(outputTestJPEG, canvas);
 });
 
 function savePNG(path, canvas) {
@@ -50,5 +52,23 @@ function savePNG(path, canvas) {
 
   stream.on('end', function () {
     console.log('Saved png', path);
+  });
+}
+
+function saveJPEG(path, canvas) {
+  var fs = require('fs'),
+    out = fs.createWriteStream(path),
+    stream = canvas.jpegStream({
+      bufsize: 4096, // output buffer size in bytes, default: 4096
+      quality: 75, // JPEG quality (0-100) default: 75
+      progressive: false // true for progressive compression, default: false
+    });
+
+  stream.on('data', function (chunk) {
+    out.write(chunk);
+  });
+
+  stream.on('end', function () {
+    console.log('Saved jpg', path);
   });
 }
