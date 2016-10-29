@@ -29,3 +29,17 @@ Desirable qualities:
 - Size and scale independent : if an image is resized or rescaled the data should still be retrievable
 - Lossy resilient : if an image is compressed using JPEG then information should be retrievable
 - Crop independent : if an image is cropped, then information should be still be retrievable
+
+## Development Goals
+1. Set up project : `COMPLETE`
+1. Decode input image into javascript object data : `COMPLETE`
+1. Encode data into image and save out : `COMPLETE`
+1. Load encoded image and detect encoded data : `COMPLETE`
+1. Save encoded image in multiple formats; PNG, and JPG at different quality levels : `COMPLETE`
+1. Auto decode encoded images after generation : `COMPLETE`
+1. Make encoding visually imperceptible : `CURRENT GOAL`
+1. Text content should be extractable from image : `COMPLETE`
+1. Watermarking : `NOT STARTED`
+1. Size and scale independence : `NOT STARTED`
+1. Lossy resilience : `NOT STARTED`
+1. Crop independence : `NOT STARTED`
