@@ -12,7 +12,7 @@ var testTemplate = fs.readFileSync(__dirname + '/test.template.html', 'utf8');
 var sourceImagePath = __dirname + '/images/source/awesome.png';
 var outputTestPath = __dirname + '/test.html'
 var outputTestPNG = __dirname + '/images/output/savePNG-test.png';
-var outputTestJPEG = __dirname + '/images/output/saveJPEG-test.jpg';
+var outputTestJPEG = __dirname + '/images/output/saveJPEG-test-{{quality}}.jpg';
 fs.readFile(sourceImagePath, function (err, sourceImage) {
   if (err) throw err;
   img = new Image;
@@ -38,7 +38,12 @@ fs.readFile(sourceImagePath, function (err, sourceImage) {
   console.log('Wrote test image out to', outputTestPath, 'containing', imgData.length, 'bytes');
 
   savePNG(outputTestPNG, canvas);
-  saveJPEG(outputTestJPEG, canvas);
+  saveJPEG(outputTestJPEG, canvas, 100);
+  saveJPEG(outputTestJPEG, canvas, 75);
+  saveJPEG(outputTestJPEG, canvas, 50);
+  saveJPEG(outputTestJPEG, canvas, 25);
+  saveJPEG(outputTestJPEG, canvas, 10);
+  saveJPEG(outputTestJPEG, canvas, 0);
 });
 
 function savePNG(path, canvas) {
@@ -55,12 +60,14 @@ function savePNG(path, canvas) {
   });
 }
 
-function saveJPEG(path, canvas) {
+function saveJPEG(path, canvas, quality) {
+  quality = quality || 75;
+  path = path.replace('{{quality}}', quality);
   var fs = require('fs'),
     out = fs.createWriteStream(path),
     stream = canvas.jpegStream({
       bufsize: 4096, // output buffer size in bytes, default: 4096
-      quality: 75, // JPEG quality (0-100) default: 75
+      quality: quality, // JPEG quality (0-100) default: 75
       progressive: false // true for progressive compression, default: false
     });
 
