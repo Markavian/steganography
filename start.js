@@ -31,7 +31,7 @@ function createStringFromNumberArray(numberArray) {
 var sourceImagePath = __dirname + '/images/source/mediacity.jpg';
 var outputPath = __dirname + '/images/output';
 var outputName = 'save';
-var resolution = 20;
+var resolution = 25;
 
 var messageToEncode = process.argv[2] || 'Team Fate is Awesome! #hackmcr 2016';
 

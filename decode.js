@@ -28,7 +28,7 @@ function createStringFromNumberArray(numberArray) {
 }
 
 var imageFolder = __dirname + '/images/downloaded';
-var resolution = 20;
+var resolution = 25;
 
 var files = ['test01.jpg', 'test02.jpg', 'test03.jpg', 'test04.jpg'];
 if(process.argv[2]) {
