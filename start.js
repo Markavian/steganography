@@ -34,6 +34,9 @@ var outputName = 'save';
 var resolution = 25;
 
 var messageToEncode = process.argv[2] || 'Team Fate is Awesome! #hackmcr 2016';
+if(process.argv[3]) {
+  sourceImagePath = __dirname + '/images/source/' + process.argv[3];
+}
 
 if (messageToEncode.length > resolution * 2) {
   console.log('WARNING: Message is too long for specified resolution - it will be cropped', Math.pow(resolution, 2), resolution, messageToEncode.length);
