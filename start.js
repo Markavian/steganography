@@ -28,7 +28,7 @@ function createStringFromNumberArray(numberArray) {
   return stringArray.join('');
 }
 
-var sourceImagePath = __dirname + '/images/source/workstation.jpg';
+var sourceImagePath = __dirname + '/images/source/mediacity.jpg';
 var outputPath = __dirname + '/images/output';
 var outputName = 'save';
 var resolution = 20;

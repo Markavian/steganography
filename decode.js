@@ -30,7 +30,12 @@ function createStringFromNumberArray(numberArray) {
 var imageFolder = __dirname + '/images/downloaded';
 var resolution = 20;
 
-['test01.jpg', 'test02.jpg', 'test03.jpg'].forEach((imagePath) => {
+var files = ['test01.jpg', 'test02.jpg', 'test03.jpg', 'test04.jpg'];
+if(process.argv[2]) {
+  files = [process.argv[2]];
+}
+
+files.forEach((imagePath) => {
   decodeImageFile(imageFolder + '/' + imagePath);
 });
 
